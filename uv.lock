@@ -356,7 +356,7 @@ wheels = [
 
 [[package]]
 name = "python-sanity"
-version = "0.1.0.dev3"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "requests" },
