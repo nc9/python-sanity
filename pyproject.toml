@@ -1,6 +1,6 @@
 [project]
 name = "python-sanity"
-version = "0.1.0.dev2"
+version = "0.1.0.dev3"
 description = "Python client for Sanity.io CMS HTTP API"
 readme = "README.md"
 license = { file="LICENSE" }
