@@ -1,15 +1,16 @@
 """Sanity.io HTTP API Python Client"""
 
-import json
-import requests
 import mimetypes
+import os
+
+import requests
 
 from sanity import apiclient, exceptions
 from sanity.webhook import (
-    parse_signature,
-    timestamp_is_valid,
     contains_valid_signature,
     get_json_payload,
+    parse_signature,
+    timestamp_is_valid,
 )
 
 
@@ -17,12 +18,12 @@ class Client(apiclient.ApiClient):
     def __init__(
         self,
         logger,
-        project_id,
-        dataset,
-        api_host=None,
-        api_version="2023-05-03",
-        use_cdn=True,
-        token=None,
+        project_id: str | None = None,
+        dataset: str | None = None,
+        api_host: str | None = None,
+        api_version: str = "2023-05-03",
+        use_cdn: bool = True,
+        token: str | None = None,
     ):
         """
         Client wrapper for Sanity.io HTTP API.
@@ -35,6 +36,23 @@ class Client(apiclient.ApiClient):
         :param use_cdn: Use CDN endpoints for quicker responses
         :param token: API token
         """
+        if not project_id:
+            project_id = os.getenv("SANITY_PROJECT_ID")
+        if not dataset:
+            dataset = os.getenv("SANITY_DATASET")
+        if not token:
+            token = os.getenv("SANITY_API_TOKEN")
+
+        # dataset default to production
+        if not dataset:
+            dataset = "production"
+
+        # raise errors on missing required vars
+        if not project_id:
+            raise ValueError("SANITY_PROJECT_ID is not set")
+        if not token:
+            raise ValueError("SANITY_API_TOKEN is not set")
+
         self.project_id = project_id
         self.dataset = dataset
         self.api_version = api_version

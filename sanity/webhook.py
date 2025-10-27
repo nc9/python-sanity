@@ -1,9 +1,9 @@
 import base64
-from datetime import datetime, timedelta
-import hmac
 import hashlib
-from cgi import parse_header
+import hmac
 import json
+from datetime import datetime, timedelta
+from email.message import Message
 
 
 def parse_signature(signature_header):
@@ -83,5 +83,7 @@ def get_content_type(headers):
     if raw_content_type is None:
         return None
 
-    content_type, _ = parse_header(raw_content_type)
+    m = Message()
+    m["content-type"] = raw_content_type
+    content_type = m.get_content_type()
     return content_type
