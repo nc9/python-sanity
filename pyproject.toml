@@ -14,7 +14,7 @@ keywords = [
     "sanity-http-api",
 ]
 classifiers = [
-    "Development Status :: 5 - Beta",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
@@ -77,6 +77,7 @@ docstring-code-line-length = 88
 [tool.pyright]
 include = ["sanity/**/*.py"]
 exclude = ["sanity/tests/**/*.py"]
+
 reportMissingImports = "error"
 reportMissingTypeStubs = false
 
