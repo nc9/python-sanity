@@ -3,7 +3,7 @@ name = "python-sanity"
 version = "0.1.0.dev3"
 description = "Python client for Sanity.io CMS HTTP API"
 readme = "README.md"
-license = { file="LICENSE" }
+license = {text = "MIT"}
 requires-python = "<4.0,>=3.10"
 authors = [
     { name="Nik Cubrilovic", email="git@nikcub.me" },
@@ -17,6 +17,8 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.10",
