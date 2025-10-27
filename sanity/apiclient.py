@@ -17,13 +17,14 @@ def merge_url(url: str, params: dict):
 
 
 class ApiClient:
-    def __init__(self, logger, base_uri, **kwargs):
+    def __init__(self, logger, base_uri: str, token: str, **kwargs):
         """
         :param logger: Logger
         :param base_uri: The base URI to the API
         """
         self.logger = logger
         self.base_uri = base_uri
+        self.token = token
 
         for k, v in kwargs.items():
             setattr(self, k, v)
