@@ -1,20 +1,19 @@
 [project]
 name = "python-sanity"
-version = "0.1.0.dev1"
+version = "0.1.0.dev2"
 description = "Python client for Sanity.io CMS HTTP API"
 readme = "README.md"
 license = { file="LICENSE" }
 requires-python = "<4.0,>=3.10"
 authors = [
-    { name="OmniPro Group", email="git@none.com" },
     { name="Nik Cubrilovic", email="git@nikcub.me" },
+    { name="OmniPro Group", email="git@none.com" },
 ]
 keywords = [
     "sanity",
     "sanity-http-api",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
