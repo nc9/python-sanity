@@ -1,22 +1,29 @@
 """Sanity.io HTTP API Python Client"""
-import json
-import requests
+
 import mimetypes
+import os
+
+import requests
 
 from sanity import apiclient, exceptions
-from sanity.webhook import parse_signature, timestamp_is_valid, contains_valid_signature, get_json_payload
+from sanity.webhook import (
+    contains_valid_signature,
+    get_json_payload,
+    parse_signature,
+    timestamp_is_valid,
+)
 
 
 class Client(apiclient.ApiClient):
     def __init__(
         self,
         logger,
-        project_id,
-        dataset,
-        api_host=None,
-        api_version="2023-05-03",
-        use_cdn=True,
-        token=None,
+        project_id: str | None = None,
+        dataset: str | None = None,
+        api_host: str | None = None,
+        api_version: str = "2023-05-03",
+        use_cdn: bool = True,
+        token: str | None = None,
     ):
         """
         Client wrapper for Sanity.io HTTP API.
@@ -29,6 +36,23 @@ class Client(apiclient.ApiClient):
         :param use_cdn: Use CDN endpoints for quicker responses
         :param token: API token
         """
+        if not project_id:
+            project_id = os.getenv("SANITY_PROJECT_ID")
+        if not dataset:
+            dataset = os.getenv("SANITY_DATASET")
+        if not token:
+            token = os.getenv("SANITY_API_TOKEN")
+
+        # dataset default to production
+        if not dataset:
+            dataset = "production"
+
+        # raise errors on missing required vars
+        if not project_id:
+            raise ValueError("SANITY_PROJECT_ID is not set")
+        if not token:
+            raise ValueError("SANITY_API_TOKEN is not set")
+
         self.project_id = project_id
         self.dataset = dataset
         self.api_version = api_version
@@ -45,7 +69,9 @@ class Client(apiclient.ApiClient):
         logger.debug(f"API Host: {api_host}")
         super().__init__(logger=logger, base_uri=api_host)
 
-    def query(self, groq: str, variables: dict = None, explain: bool = False, method="GET"):
+    def query(
+        self, groq: str, variables: dict = None, explain: bool = False, method="GET"
+    ):
         """
         https://www.sanity.io/docs/http-query
 
@@ -68,32 +94,25 @@ class Client(apiclient.ApiClient):
         """
         url = f"/data/query/{self.dataset}"
         if method.upper() == "GET":
-            params = {
-                "query": groq,
-                "explain": "true" if explain else "false"
-            }
+            params = {"query": groq, "explain": "true" if explain else "false"}
             if variables:
                 for k, v in variables.items():
                     if type(v) == str:
-                        params[f"${k}"] = f"\"{v}\""
+                        params[f"${k}"] = f'"{v}"'
                     else:
                         params[f"${k}"] = v
-            return self.request(
-                method="GET", url=url, data=None, params=params
-            )
+            return self.request(method="GET", url=url, data=None, params=params)
         elif method.upper() == "POST":
-            payload = {
-                "query": groq,
-                "params": variables
-            }
-            return self.request(
-                method="POST", url=url, data=payload, params=None
-            )
+            payload = {"query": groq, "params": variables}
+            return self.request(method="POST", url=url, data=payload, params=None)
 
     def mutate(
-            self, transactions: list, return_ids: bool = False,
-            return_documents: bool = False, visibility: str = "sync",
-            dry_run: bool = False
+        self,
+        transactions: list,
+        return_ids: bool = False,
+        return_documents: bool = False,
+        visibility: str = "sync",
+        dry_run: bool = False,
     ):
         """
         https://www.sanity.io/docs/http-mutations
@@ -119,16 +138,12 @@ class Client(apiclient.ApiClient):
             "returnIds": "true" if return_ids else "false",
             "returnDocuments": "true" if return_documents else "false",
             "visibility": visibility,
-            "dryRun": "true" if dry_run else "false"
+            "dryRun": "true" if dry_run else "false",
         }
 
-        payload = {
-            "mutations": transactions
-        }
+        payload = {"mutations": transactions}
 
-        return self.request(
-            method="POST", url=url, data=payload, params=parameters
-        )
+        return self.request(method="POST", url=url, data=payload, params=parameters)
 
     def assets(self, file_path: str, mime_type: str = ""):
         """
@@ -156,7 +171,7 @@ class Client(apiclient.ApiClient):
             else:
                 return None
         else:
-            with open(file_path, 'rb') as f:
+            with open(file_path, "rb") as f:
                 data = f.read()
 
         try:
@@ -184,15 +199,21 @@ class Client(apiclient.ApiClient):
             "time": dt,
         }
         try:
-            return self.request(
-                method="GET", url=url, data=None, params=params
-            )
+            return self.request(method="GET", url=url, data=None, params=params)
         except exceptions.SanityIOError as e:
             raise e
 
     def history_document_transactions(
-            self, document_ids: list, exclude_content=True, from_time=None, to_time=None,
-            from_transaction=None, to_transaction=None, authors=None, reverse=False, limit=100
+        self,
+        document_ids: list,
+        exclude_content=True,
+        from_time=None,
+        to_time=None,
+        from_transaction=None,
+        to_transaction=None,
+        authors=None,
+        reverse=False,
+        limit=100,
     ):
         """
 
@@ -225,8 +246,12 @@ class Client(apiclient.ApiClient):
         }
         try:
             data = self.request(
-                method="GET", url=url, data=None, params=params,
-                load_json=False, parse_ndjson=True
+                method="GET",
+                url=url,
+                data=None,
+                params=params,
+                load_json=False,
+                parse_ndjson=True,
             )
             return data
         except exceptions.SanityIOError as e:
@@ -244,10 +269,7 @@ def validate_webhook(event: dict, secret: str):
         return False
 
     return contains_valid_signature(
-        payload=event["body"],
-        timestamp=timestamp,
-        signatures=signatures,
-        secret=secret
+        payload=event["body"], timestamp=timestamp, signatures=signatures, secret=secret
     )
 
 

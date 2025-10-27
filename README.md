@@ -1,7 +1,13 @@
 # sanity-python
-Sanity Python Client
 
-## Example
+Python client for Sanity.io CMS HTTP API.
+
+> **ℹ️ Note:**
+> This package is an active **fork** of the original project at [OmniPro-Group/sanity-python](https://github.com/OmniPro-Group/sanity-python/).
+
+
+## Examples
+
 ```python
 from sanity.client import Client
 import logging
@@ -82,13 +88,4 @@ result = client.mutate(
     dry_run=False,
 )
 print_json_in_colour(result)
-```
-
-## Pre Commit Howto
-```shell
-pip install -r requirements.txt
-pre-commit --version
-# create .pre-commit-config.yaml file
-pre-commit install
-pre-commit run --all-files
 ```
