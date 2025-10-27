@@ -25,7 +25,7 @@ def parse_signature(signature_header):
 
 def timestamp_is_valid(timestamp):
     current_time = datetime.today()
-    sanity_timestamp = datetime.fromtimestamp(int(timestamp)/1000)
+    sanity_timestamp = datetime.fromtimestamp(int(timestamp) / 1000)
 
     diff = current_time - sanity_timestamp
 
@@ -39,7 +39,9 @@ def contains_valid_signature(payload, timestamp, signatures, secret):
         key=secret.encode(), msg=payload_bytes, digestmod=hashlib.sha256
     ).digest()
     computed_hmac = base64.b64encode(digest)
-    computed_signature = computed_hmac.decode("utf-8").replace("/", "_").replace("+", "-").rstrip('=')
+    computed_signature = (
+        computed_hmac.decode("utf-8").replace("/", "_").replace("+", "-").rstrip("=")
+    )
 
     t = any(
         hmac.compare_digest(event_signature, computed_signature)

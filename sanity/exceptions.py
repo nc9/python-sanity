@@ -1,2 +1,2 @@
 class SanityIOError(Exception):
-   pass
+    pass
