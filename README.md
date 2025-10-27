@@ -1,10 +1,36 @@
-# sanity-python
+# python-sanity
 
-Python client for Sanity.io CMS HTTP API.
+Python client for [Sanity.io](https://sanity.io) CMS HTTP API.
 
 > **ℹ️ Note:**
 > This package is an active **fork** of the original project at [OmniPro-Group/sanity-python](https://github.com/OmniPro-Group/sanity-python/).
 
+## Install
+
+Available on pypi as package `python-sanity`
+
+Install with `uv`:
+
+```sh
+uv add python-sanity
+```
+
+Install with `pip`:
+
+```sh
+pip install python-sanity
+```
+
+## Environment Variables
+
+You can pass parameters to the client constructor directly, but it is recommended to use environment variables.
+
+| Variable | Description | Required | Default Value |
+|----------|-------------|----------|--------------|
+| SANITY_PROJECT_ID | The project ID | Yes | |
+| SANITY_DATASET | The dataset to use | No | `production` |
+| SANITY_API_TOKEN | The API token | Yes | |
+| SANITY_LOG_LEVEL | Level of logging | No | `INFO` |
 
 ## Examples
 
