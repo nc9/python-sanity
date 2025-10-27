@@ -1,12 +1,93 @@
-[tool.black]
- line-length = 88
- target_version = ['py39']
- include = '\.py'
- exclude = '''
-   /(
-       \.eggs         # exclude a few common directories in the
-     | \.git          # root of the project
-     | templates
-     | docs
-   )/
- '''
+[project]
+name = "sanity-python"
+version = "0.1.0.dev0"
+description = "Python client for Sanity.io CMS HTTP API"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = "<4.0,>=3.10"
+authors = [
+    { name="OmniPro Group", email="git@none.com" },
+    { name="Nik Cubrilovic", email="git@nikcub.me" },
+]
+keywords = [
+    "sanity",
+    "sanity-http-api",
+]
+classifiers = [
+    "Development Status :: 5 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python",
+]
+dependencies = [
+    "requests>=2.32.5",
+]
+
+[dependency-groups]
+dev = [
+    "click>=8.3.0",
+    "coverage>=7.11.0",
+    "mock>=5.2.0",
+    "pre-commit>=4.3.0",
+    "pygments>=2.19.2",
+    "pyright>=1.1.407",
+    "python-dotenv>=1.2.1",
+    "responses>=0.25.8",
+    "ruff>=0.14.2",
+]
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+  "F",   # flake8
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "C",   # flake8-comprehensions
+  "B",   # flake8-bugbear
+  "UP",  # pyupgrade
+  "T",   # mypy
+]
+ignore = [
+    "B008",  # do not perform function calls in argument defaults
+    "T201",  # ignore print
+    "T203",  # ignore pprint
+    "C901",  # ignore function too complex
+    "E721",  # igmpre unsafe type comparison
+]
+
+[tool.ruff.format]
+quote-style = "double"
+docstring-code-format = true
+docstring-code-line-length = 88
+
+[tool.pyright]
+include = ["sanity/**/*.py"]
+exclude = ["sanity/tests/**/*.py"]
+reportMissingImports = "error"
+reportMissingTypeStubs = false
+
+[tool.pytest.ini_options]
+log_cli = true
+log_level = "DEBUG"
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+
