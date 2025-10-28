@@ -274,7 +274,7 @@ class SanityAsyncClient(AsyncApiClient):
         timeout: TimeoutConfig | None = None,
         retry_config: RetryConfig | None = None,
         max_connections: int = 100,
-        http2: bool = False,
+        http2: bool = True,
     ):
         """
         Async client wrapper for Sanity.io HTTP API.
