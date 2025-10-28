@@ -34,6 +34,11 @@ format:
 		git commit -m "style: format code via make format-commit"; \
 	fi
 
+.PHONY: git-push
+git-push:
+	git push
+	git push origin $(branch)
+
 .PHONY: install
 install:
 	uv add python-sanity
@@ -45,5 +50,5 @@ version-bump:
 	git commit -m "Bump version to $(version) ($(BUMP))"
 
 .PHONY: release
-release: clean format version-bump build publish
+release: clean format version-bump build publish git-push
 
