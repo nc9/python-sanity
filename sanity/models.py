@@ -1,6 +1,8 @@
 """Pydantic models for Sanity API responses."""
 
-from typing import Any
+from __future__ import annotations
+
+from typing import Any, Dict, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -15,13 +17,13 @@ class QueryResponse(BaseModel):
         None, description="The submitted GROQ query (if returnQuery=true)"
     )
     result: Any = Field(..., description="Query result (can be any valid JSON value)")
-    sync_tags: list[str] | None = Field(
+    sync_tags: List[str] | None = Field(
         None,
         alias="syncTags",
         description="Array of tags for request filtering and aggregation",
     )
 
-    def dict(self, *args, **kwargs) -> dict[str, Any]:
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
         """Return dict representation for backward compatibility."""
         return super().model_dump(*args, **kwargs)
 
@@ -35,7 +37,7 @@ class MutationResult(BaseModel):
     operation: str = Field(
         ..., description="Operation type (create, update, delete, etc.)"
     )
-    document: dict[str, Any] | None = Field(
+    document: Dict[str, Any] | None = Field(
         None, description="Full document (if returnDocuments=true)"
     )
 
@@ -48,15 +50,15 @@ class MutationResponse(BaseModel):
     transaction_id: str = Field(
         ..., alias="transactionId", description="Unique transaction identifier"
     )
-    results: list[dict[str, Any]] = Field(..., description="Array of mutation results")
-    document_ids: list[str] | None = Field(
+    results: List[Dict[str, Any]] = Field(..., description="Array of mutation results")
+    document_ids: List[str] | None = Field(
         None, alias="documentIds", description="IDs of affected documents"
     )
-    documents: list[dict[str, Any]] | None = Field(
+    documents: List[Dict[str, Any]] | None = Field(
         None, description="Full documents (if returnDocuments=true)"
     )
 
-    def dict(self, *args, **kwargs) -> dict[str, Any]:
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
         """Return dict representation for backward compatibility."""
         return super().model_dump(*args, **kwargs)
 
@@ -77,7 +79,7 @@ class AssetDocument(BaseModel):
     original_filename: str | None = Field(
         None, alias="originalFilename", description="Original filename"
     )
-    metadata: dict[str, Any] | None = Field(
+    metadata: Dict[str, Any] | None = Field(
         None, description="Asset metadata (dimensions, etc.)"
     )
 
@@ -89,7 +91,7 @@ class AssetResponse(BaseModel):
 
     document: AssetDocument = Field(..., description="Uploaded asset document")
 
-    def dict(self, *args, **kwargs) -> dict[str, Any]:
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
         """Return dict representation for backward compatibility."""
         return super().model_dump(*args, **kwargs)
 
@@ -111,11 +113,11 @@ class HistoryResponse(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
-    documents: list[HistoryRevision] = Field(
+    documents: List[HistoryRevision] = Field(
         ..., description="Array of document revisions"
     )
 
-    def dict(self, *args, **kwargs) -> dict[str, Any]:
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
         """Return dict representation for backward compatibility."""
         return super().model_dump(*args, **kwargs)
 
@@ -128,10 +130,10 @@ class TransactionHistoryItem(BaseModel):
     id: str = Field(..., description="Transaction ID")
     timestamp: str = Field(..., description="Transaction timestamp")
     author: str | None = Field(None, description="Author of the transaction")
-    document_ids: list[str] | None = Field(
+    document_ids: List[str] | None = Field(
         None, alias="documentIDs", description="Affected document IDs"
     )
-    mutations: list[dict[str, Any]] | None = Field(
+    mutations: List[Dict[str, Any]] | None = Field(
         None, description="Mutations in this transaction"
     )
 
@@ -141,10 +143,10 @@ class TransactionHistoryResponse(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
-    transactions: list[TransactionHistoryItem] = Field(
+    transactions: List[TransactionHistoryItem] = Field(
         ..., description="Array of transactions"
     )
 
-    def dict(self, *args, **kwargs) -> dict[str, Any]:
+    def dict(self, *args, **kwargs) -> Dict[str, Any]:
         """Return dict representation for backward compatibility."""
         return super().model_dump(*args, **kwargs)
