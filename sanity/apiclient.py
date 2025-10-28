@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 import httpx
 
 from sanity import exceptions
-from sanity.config import ClientConfig, RetryConfig, TimeoutConfig
+from sanity.config import RetryConfig, TimeoutConfig
 from sanity.retry import RetryHandler
 
 

@@ -8,7 +8,7 @@ from typing import Any
 import httpx
 
 from sanity import apiclient, exceptions
-from sanity.config import ClientConfig, RetryConfig, TimeoutConfig
+from sanity.config import RetryConfig, TimeoutConfig
 from sanity.logger import get_logger
 from sanity.webhook import (
     contains_valid_signature,
@@ -277,7 +277,7 @@ class Client(apiclient.ApiClient):
             try:
                 with open(file_path, "rb") as f:
                     data = f.read()
-            except (OSError, IOError) as e:
+            except OSError as e:
                 raise exceptions.SanityError(
                     message=f"Failed to read file {file_path}: {str(e)}"
                 ) from e

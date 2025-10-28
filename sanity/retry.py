@@ -10,8 +10,6 @@ import httpx
 from sanity.config import RetryConfig
 from sanity.exceptions import (
     SanityConnectionError,
-    SanityRateLimitError,
-    SanityServerError,
     SanityTimeoutError,
 )
 

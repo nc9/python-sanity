@@ -506,7 +506,7 @@ class AsyncClient(AsyncApiClient):
                 # but for now we'll use sync read since it's simple
                 with open(file_path, "rb") as f:
                     data = f.read()
-            except (OSError, IOError) as e:
+            except OSError as e:
                 raise exceptions.SanityError(
                     message=f"Failed to read file {file_path}: {str(e)}"
                 ) from e
