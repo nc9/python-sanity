@@ -29,7 +29,7 @@ class ApiClient:
         timeout: TimeoutConfig | None = None,
         retry_config: RetryConfig | None = None,
         max_connections: int = 100,
-        http2: bool = True,
+        http2: bool = False,
         **kwargs,
     ):
         """
@@ -58,11 +58,16 @@ class ApiClient:
         self.retry_handler = RetryHandler(self.retry_config, self.logger)
 
         # Create httpx client with configuration
-        timeout_tuple = httpx.Timeout(*self.timeout_config.as_tuple())
+        timeout = httpx.Timeout(
+            connect=self.timeout_config.connect,
+            read=self.timeout_config.read,
+            write=self.timeout_config.write,
+            pool=self.timeout_config.pool,
+        )
         limits = httpx.Limits(max_connections=max_connections)
 
         self.session = httpx.Client(
-            timeout=timeout_tuple,
+            timeout=timeout,
             limits=limits,
             http2=http2,
             follow_redirects=True,

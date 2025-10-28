@@ -4,6 +4,7 @@ import os
 import tempfile
 
 import pytest
+import pytest_asyncio
 import respx
 from httpx import Response
 
@@ -59,7 +60,7 @@ def mock_sanity_responses():
     }
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def async_client():
     """Create test async client."""
     client = AsyncClient(

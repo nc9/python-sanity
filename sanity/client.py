@@ -31,7 +31,7 @@ class Client(apiclient.ApiClient):
         timeout: TimeoutConfig | None = None,
         retry_config: RetryConfig | None = None,
         max_connections: int = 100,
-        http2: bool = True,
+        http2: bool = False,
     ):
         """
         Client wrapper for Sanity.io HTTP API.
