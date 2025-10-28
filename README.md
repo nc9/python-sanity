@@ -46,89 +46,189 @@ You can pass parameters to the client constructor directly, but it is recommende
 |----------|-------------|----------|--------------|
 | SANITY_PROJECT_ID | The project ID | Yes | |
 | SANITY_DATASET | The dataset to use | No | `production` |
-| SANITY_API_TOKEN | The API token | Yes | |
+| SANITY_API_TOKEN | The API token | No (required for mutations) | |
 | SANITY_LOG_LEVEL | Level of logging | No | `INFO` |
 
-## Examples
+## What's New in v0.2.0
+
+- **AsyncClient**: Full async/await support for all operations
+- **Optional Logger**: Logger parameter is now optional, uses built-in logger with `SANITY_LOG_LEVEL` support
+- **httpx**: Migrated from `requests` to `httpx` for better async support and HTTP/2
+- **Automatic Retries**: Configurable retry logic with exponential backoff
+- **Better Error Handling**: Specific exception types (`SanityAuthError`, `SanityRateLimitError`, etc.)
+- **New API Parameters**:
+  - Query: `perspective`, `result_source_map`, `tag`, `return_query`
+  - Mutation: `auto_generate_array_keys`, `skip_cross_dataset_references_validation`, `transaction_id`
+- **Context Managers**: Both `Client` and `AsyncClient` support context managers
+- **Updated API Version**: Default API version updated to `2025-02-19`
+
+## Quick Start
+
+### Synchronous Client
 
 ```python
-from sanity.client import Client
-import logging
-from scripts.colour_json import print_json_in_colour
+from sanity import Client
 
-logger = logging.getLogger(__name__)
+# Simple initialization (logger is now optional!)
+client = Client()  # Uses environment variables
 
-project_id = "<project id>"
-dataset = "<dataset>"
-token = "<api token>"
-
+# Or with explicit parameters
 client = Client(
-    logger,
-    project_id=project_id,
-    dataset=dataset,
-    token=token,
+    project_id="your-project-id",
+    dataset="production",
+    token="your-api-token",  # Optional for read-only queries
     use_cdn=True
 )
 
-# GET Query Method
+# Query with GROQ
 result = client.query(
-    groq="count(*[_type == 'post'])",
-    explain=False,
-    variables={
-        "language": "es",
-        "t": 4
-    },
-    method="GET"
+    groq="*[_type == 'post'] | order(publishedAt desc)[0...10]",
+    variables={"limit": 10}
 )
-print_json_in_colour(result)
 
-# POST Query Method
-result = client.query(
-    groq="count(*[_type == 'post'])",
-    variables={
-        "language": "es",
-        "t": 4
-    },
-    method="POST"
-)
-print_json_in_colour(result)
-
-# Assets
-png = "https://some.web.address.com/some_name.png"
-result = client.assets(file_path=png)
-print_json_in_colour(result)
-
-png2 = "some_file_path/name"
-result = client.assets(file_path=png2, mime_type="image/png")
-print_json_in_colour(result)
-
-# Mutate
-transactions = [
-    {
-        "createOrReplace": {
-            "_id": "speaker.asdf",
-            "_type": "speaker",
-            "title": "Some Name",
-            "slug": {
-                "_type": "slug",
-                "current": "some-name"
-            },
-            'image': {
-              '_type': 'image',
-              'asset': {
-                '_ref': 'image-6ffb37d2eeabc7d07b3ca485c7b497e77bdcccd4-1232x1280-png',
-                '_type': 'reference'
-              }
-            }
-        }
+# Mutations
+transactions = [{
+    "createOrReplace": {
+        "_id": "post.123",
+        "_type": "post",
+        "title": "Hello World",
+        "publishedAt": "2025-01-15T00:00:00Z"
     }
-]
+}]
+
 result = client.mutate(
     transactions=transactions,
-    return_ids=False,
-    return_documents=False,
-    visibility="sync",
-    dry_run=False,
+    return_documents=True
 )
-print_json_in_colour(result)
+
+# Upload assets
+result = client.assets(
+    file_path="https://example.com/image.png"
+)
 ```
+
+### Async Client
+
+```python
+from sanity import AsyncClient
+import asyncio
+
+async def main():
+    # Use async context manager
+    async with AsyncClient() as client:
+        # Async query
+        result = await client.query(
+            groq="*[_type == 'post']",
+            perspective="published"
+        )
+
+        # Async mutation
+        result = await client.mutate(
+            transactions=[{
+                "create": {
+                    "_type": "post",
+                    "title": "Async Post"
+                }
+            }]
+        )
+
+        # Async asset upload
+        result = await client.assets(
+            file_path="/path/to/image.png"
+        )
+
+asyncio.run(main())
+```
+
+### Advanced Configuration
+
+```python
+from sanity import Client, TimeoutConfig, RetryConfig
+
+# Custom timeouts and retries
+client = Client(
+    timeout=TimeoutConfig(
+        connect=5.0,
+        read=30.0,
+        write=30.0,
+        pool=5.0
+    ),
+    retry_config=RetryConfig(
+        max_retries=5,
+        backoff_factor=1.0
+    ),
+    http2=True
+)
+```
+
+### Error Handling
+
+```python
+from sanity import (
+    Client,
+    SanityAuthError,
+    SanityRateLimitError,
+    SanityValidationError
+)
+
+client = Client()
+
+try:
+    result = client.query(groq="*[_type == 'post']")
+except SanityAuthError as e:
+    print(f"Authentication failed: {e.message}")
+except SanityRateLimitError as e:
+    print(f"Rate limited, retry after {e.retry_after}s")
+except SanityValidationError as e:
+    print(f"Validation error: {e.response_body}")
+```
+
+## Migration Guide from v0.1.x
+
+### Breaking Changes
+
+**None!** v0.2.0 is fully backward compatible.
+
+### Optional Improvements
+
+1. **Logger is now optional:**
+   ```python
+   # Old way (still works)
+   import logging
+   client = Client(logger=logging.getLogger(__name__))
+
+   # New way (simpler)
+   client = Client()  # Uses built-in logger with SANITY_LOG_LEVEL
+   ```
+
+2. **Use context managers for cleanup:**
+   ```python
+   # Recommended
+   with Client() as client:
+       result = client.query(groq="*[_type == 'post']")
+   ```
+
+3. **Try async for better performance:**
+   ```python
+   from sanity import AsyncClient
+
+   async with AsyncClient() as client:
+       result = await client.query(groq="*[_type == 'post']")
+   ```
+
+4. **Use new parameters:**
+   ```python
+   # Query with perspective
+   result = client.query(
+       groq="*[_type == 'post']",
+       perspective="published",  # drafts, published, raw
+       tag="my-app"
+   )
+
+   # Mutations with new options
+   result = client.mutate(
+       transactions=[...],
+       auto_generate_array_keys=True,
+       transaction_id="my-custom-id"
+   )
+   ```
