@@ -25,7 +25,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "requests>=2.32.5",
+    "httpx>=0.27.0",
+    "pydantic>=2.0.0",
 ]
 
 [dependency-groups]
@@ -36,8 +37,10 @@ dev = [
     "mock>=5.2.0",
     "pre-commit>=4.3.0",
     "pygments>=2.19.2",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
     "python-dotenv>=1.2.1",
-    "responses>=0.25.8",
+    "respx>=0.21.0",
     "ruff>=0.14.2",
 ]
 
