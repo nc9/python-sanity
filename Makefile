@@ -41,7 +41,7 @@ install:
 .PHONY: version-bump
 version-bump:
 	uv version --bump $(BUMP)
-	git add pyproject.toml
+	git add pyproject.toml uv.lock
 	git commit -m "Bump version to $(version) ($(BUMP))"
 
 .PHONY: release
