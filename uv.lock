@@ -573,7 +573,7 @@ wheels = [
 
 [[package]]
 name = "python-sanity"
-version = "0.2.0.dev2"
+version = "0.2.0.post1"
 source = { editable = "." }
 dependencies = [
     { name = "httpx", extra = ["http2"] },
