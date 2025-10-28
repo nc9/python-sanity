@@ -2,6 +2,7 @@
 
 import mimetypes
 import os
+from typing import Any
 
 import requests
 
@@ -67,10 +68,14 @@ class Client(apiclient.ApiClient):
             api_host = f"https://{project_id}.api.sanity.io/v{self.api_version}"
 
         logger.debug(f"API Host: {api_host}")
-        super().__init__(logger=logger, base_uri=api_host)
+        super().__init__(logger=logger, base_uri=api_host, token=token)
 
     def query(
-        self, groq: str, variables: dict = None, explain: bool = False, method="GET"
+        self,
+        groq: str,
+        variables: dict[str, Any] | None = None,
+        explain: bool = False,
+        method="GET",
     ):
         """
         https://www.sanity.io/docs/http-query
