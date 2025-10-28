@@ -258,6 +258,10 @@ class Client(apiclient.ApiClient):
             raise e
 
 
+# Alias for backwards compatibility
+SanityClient = Client
+
+
 def validate_webhook(event: dict, secret: str):
     headers = event.get("headers", {})
 

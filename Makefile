@@ -11,6 +11,31 @@ ruff-lint = uv run ruff lint $(projectpath)
 pyright = uv run pyright -v .venv $(projectpath)
 BUMP ?= dev
 
+.PHONY: build
+build:
+	uv build
+
+.PHONY: publish
+publish:
+	uv publish
+
+.PHONY: install
+install:
+	uv add python-sanity
+
+.PHONE: pre-release
+pre-release:
+	uv version --bump $(BUMP)
+	git add pyproject.toml
+	git commit -m "Bump version to $(version) (pre-release)"
+
+.PHONY: release
+release:
+	uv version --bump patch
+	git add pyproject.toml
+	git commit -m "Bump version to $(version) (release)"
+	uv publish
+
 .PHONY: clean
 clean:
 	ruff clean
