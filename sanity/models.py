@@ -48,9 +48,7 @@ class MutationResponse(BaseModel):
     transaction_id: str = Field(
         ..., alias="transactionId", description="Unique transaction identifier"
     )
-    results: list[dict[str, Any]] = Field(
-        ..., description="Array of mutation results"
-    )
+    results: list[dict[str, Any]] = Field(..., description="Array of mutation results")
     document_ids: list[str] | None = Field(
         None, alias="documentIds", description="IDs of affected documents"
     )

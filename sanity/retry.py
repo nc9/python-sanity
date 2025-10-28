@@ -30,7 +30,10 @@ class RetryHandler:
         self.logger = logger
 
     def should_retry(
-        self, attempt: int, exception: Exception | None = None, status_code: int | None = None
+        self,
+        attempt: int,
+        exception: Exception | None = None,
+        status_code: int | None = None,
     ) -> bool:
         """
         Determine if a request should be retried.
@@ -61,7 +64,8 @@ class RetryHandler:
             self.config.retry_on_connection_error
             and exception
             and isinstance(
-                exception, (httpx.ConnectError, httpx.NetworkError, SanityConnectionError)
+                exception,
+                (httpx.ConnectError, httpx.NetworkError, SanityConnectionError),
             )
         ):
             return True
@@ -106,7 +110,9 @@ class RetryHandler:
 
                 retry_after = self._get_retry_after(e.response)
 
-                if not self.should_retry(attempt, exception=e, status_code=last_status_code):
+                if not self.should_retry(
+                    attempt, exception=e, status_code=last_status_code
+                ):
                     self.logger.error(
                         f"{operation_name} failed with status {last_status_code}, "
                         f"no more retries"
@@ -167,7 +173,9 @@ class RetryHandler:
 
                 retry_after = self._get_retry_after(e.response)
 
-                if not self.should_retry(attempt, exception=e, status_code=last_status_code):
+                if not self.should_retry(
+                    attempt, exception=e, status_code=last_status_code
+                ):
                     self.logger.error(
                         f"{operation_name} failed with status {last_status_code}, "
                         f"no more retries"

@@ -455,7 +455,9 @@ class AsyncClient(AsyncApiClient):
 
         payload = {"mutations": transactions}
 
-        return await self.request(method="POST", url=url, data=payload, params=parameters)
+        return await self.request(
+            method="POST", url=url, data=payload, params=parameters
+        )
 
     async def assets(self, file_path: str, mime_type: str = ""):
         """
@@ -509,7 +511,9 @@ class AsyncClient(AsyncApiClient):
                     message=f"Failed to read file {file_path}: {str(e)}"
                 ) from e
 
-        return await self.request(method="POST", url=url, data=data, content_type=mime_type)
+        return await self.request(
+            method="POST", url=url, data=data, content_type=mime_type
+        )
 
     async def history_document_revision(self, document_id, revision=None, dt=None):
         """

@@ -172,10 +172,7 @@ class Client(apiclient.ApiClient):
                 params["returnQuery"] = "false"
 
             return self.request(
-                method="POST",
-                url=url,
-                data=payload,
-                params=params if params else None
+                method="POST", url=url, data=payload, params=params if params else None
             )
 
     def mutate(
@@ -285,9 +282,7 @@ class Client(apiclient.ApiClient):
                     message=f"Failed to read file {file_path}: {str(e)}"
                 ) from e
 
-        return self.request(
-            method="POST", url=url, data=data, content_type=mime_type
-        )
+        return self.request(method="POST", url=url, data=data, content_type=mime_type)
 
     def history_document_revision(self, document_id, revision=None, dt=None):
         """
