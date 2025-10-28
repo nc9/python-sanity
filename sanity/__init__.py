@@ -17,7 +17,7 @@ copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 """
 
-from sanity.async_client import AsyncClient
+from sanity.async_client import SanityAsyncClient
 from sanity.client import Client, SanityClient
 from sanity.config import ClientConfig, RetryConfig, TimeoutConfig
 from sanity.exceptions import (
@@ -50,7 +50,7 @@ __all__ = [
     # Clients
     "Client",
     "SanityClient",
-    "AsyncClient",
+    "SanityAsyncClient",
     # Configuration
     "ClientConfig",
     "TimeoutConfig",

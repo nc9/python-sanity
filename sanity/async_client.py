@@ -259,7 +259,7 @@ class AsyncApiClient:
         await self.close()
 
 
-class AsyncClient(AsyncApiClient):
+class SanityAsyncClient(AsyncApiClient):
     """Async Sanity.io HTTP API client."""
 
     def __init__(

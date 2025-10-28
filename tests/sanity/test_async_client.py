@@ -8,7 +8,7 @@ import pytest_asyncio
 import respx
 from httpx import Response
 
-from sanity import AsyncClient
+from sanity import SanityAsyncClient
 from sanity.exceptions import (
     SanityAuthError,
     SanityNotFoundError,
@@ -63,7 +63,7 @@ def mock_sanity_responses():
 @pytest_asyncio.fixture
 async def async_client():
     """Create test async client."""
-    client = AsyncClient(
+    client = SanityAsyncClient(
         project_id="test-project",
         dataset="test-dataset",
         token="test-token",
@@ -79,7 +79,7 @@ class TestAsyncClientInitialization:
     @pytest.mark.asyncio
     async def test_init_with_params(self):
         """Test async client initialization."""
-        async with AsyncClient(
+        async with SanityAsyncClient(
             project_id="my-project",
             dataset="staging",
             token="my-token",
@@ -92,13 +92,13 @@ class TestAsyncClientInitialization:
     @pytest.mark.asyncio
     async def test_init_without_logger(self):
         """Test that logger is optional for async client."""
-        async with AsyncClient(project_id="test", dataset="test") as client:
+        async with SanityAsyncClient(project_id="test", dataset="test") as client:
             assert client.logger is not None
 
     @pytest.mark.asyncio
     async def test_context_manager(self):
         """Test async client as context manager."""
-        async with AsyncClient(project_id="test", dataset="test") as client:
+        async with SanityAsyncClient(project_id="test", dataset="test") as client:
             assert client is not None
         # Session should be closed after context
 
@@ -218,7 +218,7 @@ class TestAsyncMutations:
     @pytest.mark.asyncio
     async def test_mutate_without_token(self):
         """Test that async mutation without token raises error."""
-        async with AsyncClient(
+        async with SanityAsyncClient(
             project_id="test", dataset="test", token=None
         ) as client:
             transactions = [{"create": {"_type": "author"}}]
@@ -254,7 +254,7 @@ class TestAsyncAssets:
     @pytest.mark.asyncio
     async def test_assets_without_token(self):
         """Test that async asset upload without token raises error."""
-        async with AsyncClient(
+        async with SanityAsyncClient(
             project_id="test", dataset="test", token=None
         ) as client:
             with pytest.raises(SanityAuthError, match="API token is required"):
